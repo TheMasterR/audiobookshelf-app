@@ -9,7 +9,9 @@ import Capacitor
 // What does need forwarding: under the scene life cycle UIKit no longer calls
 // application(_:open:options:) or application(_:continue:restorationHandler:) on the
 // app delegate, so the URL scheme and universal link entry points are re-routed to
-// Capacitor from the scene callbacks below.
+// Capacitor from the scene callbacks below. The same goes for the foreground and
+// background transitions, which are logged here instead of in AppDelegate. The app
+// declares a single scene, so these match the app-level transitions one to one.
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
@@ -26,6 +28,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
         forwardToCapacitor(userActivity)
+    }
+
+    func sceneDidEnterBackground(_ scene: UIScene) {
+        AbsLogger.info(message: "Audiobookself is now in the background")
+    }
+
+    func sceneWillEnterForeground(_ scene: UIScene) {
+        AbsLogger.info(message: "Audiobookself is now in the foreground")
+    }
+
+    func sceneDidBecomeActive(_ scene: UIScene) {
+        AbsLogger.info(message: "Audiobookself is now active")
     }
 
     private func forwardToCapacitor(_ context: UIOpenURLContext) {
